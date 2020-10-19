@@ -1,8 +1,32 @@
-//
-// Created by Nishant Jain on 10/15/20.
-//
+// LinkedListNode.cpp
+// Name: Nishant Jain
+// VUNetid: jainn6
+// Email: nishant.jan@vanderbilt.edu
+// Honor statement: I attest that I understand the honor code for this class and have neither given
+// nor received any unauthorized aid on this assignment
 #ifndef LINKED_LIST_NODE_CPP
 #define LINKED_LIST_NODE_CPP
+
+/**
+ * Initializes this node to store the provided item. The next and previous
+ * pointers of this node are set to point to the node itself.
+ * This operation provides strong exception safety.
+ *
+ * @param item the item to set
+ */
+template <typename T>
+LinkedListNode<T>::LinkedListNode(const T& item)
+    : mItem(item)
+    , mPrev(this)
+    , mNext(this){}
+
+/**
+ * Destructor. Unlinks this node from its neighbors.
+ * This operation is a no-throw.
+ */
+template <typename T> LinkedListNode<T>::~LinkedListNode() noexcept{
+    link(mPrev, mNext);
+}
 
 /**
  * Initializes this node with the provided values, i.e. the node stores
@@ -16,8 +40,14 @@
  * @param next pointer to the next node
  */
 template <typename T>
-LinkedListNode<T> :: LinkedListNode(const T& item, LinkedListNode<T>* prev, LinkedListNode<T>* next)
-: mItem(item), mPrev(prev), mNext(next){}
+LinkedListNode<T>::LinkedListNode(const T& item, LinkedListNode<T>* prev, LinkedListNode<T>* next)
+    : mItem(item)
+    , mPrev(prev)
+    , mNext(next){
+    link(prev, this);
+    link(this, next);
+}
+
 
 /**
  * Establishes the proper linkage between the provided nodes.  First and
@@ -28,41 +58,9 @@ LinkedListNode<T> :: LinkedListNode(const T& item, LinkedListNode<T>* prev, Link
  * @post    first and second are linked in that order
  */
 template <typename T>
-void LinkedListNode<T> :: link(LinkedListNode<T>* first, LinkedListNode<T>* second) noexcept{
-    if (first != second){
-        first->mNext = second;
-        second->mPrev = first;
-    }
+void LinkedListNode<T>::link(LinkedListNode<T>* first, LinkedListNode<T>* second) noexcept
+{
+    first->mNext = second;
+    second->mPrev = first;
 }
-
-
-/**
- * Initializes this node to store the provided item. The next and previous
- * pointers of this node are set to point to the node itself.
- * This operation provides strong exception safety.
- * @param item the item to set
- */
-template <typename T>
-LinkedListNode<T> :: LinkedListNode(const T& item) : mItem(item), mPrev(this), mNext(this){}
-
-
-
-/**
- * Destructor. Unlinks this node from its neighbors.
- * This operation is a no-throw.
- */
-template <typename T>
-LinkedListNode<T> :: ~LinkedListNode() noexcept{
-    if (this->mNext == nullptr){ //if it's the last node in the list
-        mPrev->mNext = nullptr;
-    }
-    else { // some random node in the middle of the list (has an mPrev and mNext)
-        mNext->mPrev = mPrev;
-        mPrev->mNext = mNext;
-    }
-    LinkedListNode<T>* node(this); //exception safety?
-    delete node;
-}
-
-
-#endif // LINKED_LIST_NODE_CPP
+#endif

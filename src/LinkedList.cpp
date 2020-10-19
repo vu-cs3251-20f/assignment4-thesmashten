@@ -16,7 +16,10 @@
  */
 template <typename T>
 LinkedList<T>::LinkedList()
-    : mSize(0), mTail(std::make_unique<LinkedListNode<T>>()){}
+    : mSize(0)
+    , mTail(std::make_unique<LinkedListNode<T>>())
+{
+}
 
 /**
  * Initializes the LinkedList to be a copy of src.
@@ -26,7 +29,9 @@ LinkedList<T>::LinkedList()
  */
 template <typename T>
 LinkedList<T>::LinkedList(const LinkedList<T>& src)
-    : mSize(0), mTail(std::make_unique<LinkedListNode<T>>()){
+    : mSize(0)
+    , mTail(std::make_unique<LinkedListNode<T>>())
+{
     uint32_t otherSize = src.mSize;
     std::unique_ptr<LinkedList<T>> tmp(std::make_unique<LinkedList<T>>());
     LinkedListConstIterator<T> iter = src.begin();
@@ -46,7 +51,8 @@ LinkedList<T>::LinkedList(const LinkedList<T>& src)
  * @param rhs LinkedList to copy
  * @return *this, used for chaining.
  */
-template <typename T> LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& rhs){
+template <typename T> LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& rhs)
+{
     if (this != &rhs) {
         std::unique_ptr<LinkedList<T>> tmp(std::make_unique<LinkedList<T>>(rhs));
         swap(*tmp);
@@ -59,7 +65,8 @@ template <typename T> LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T
  * This operation is no-throw under the assumption that the parameterizing
  * type's destructor is no-throw.
  */
-template <typename T> LinkedList<T>::~LinkedList() noexcept{
+template <typename T> LinkedList<T>::~LinkedList() noexcept
+{
     LinkedList<T>::clear();
 }
 
@@ -70,7 +77,8 @@ template <typename T> LinkedList<T>::~LinkedList() noexcept{
  *
  * @param value value to append to this LinkedList
  */
-template <typename T> void LinkedList<T>::add(const T& value){
+template <typename T> void LinkedList<T>::add(const T& value)
+{
     new LinkedListNode<T>(value, mTail->mPrev, mTail.get());
     ++mSize;
 }
@@ -88,26 +96,25 @@ template <typename T> void LinkedList<T>::add(const T& value){
  * @param index index at which to insert value
  * @param value the element to insert
  */
-template <typename T> void LinkedList<T>::add(uint32_t index, const T& value){
+template <typename T> void LinkedList<T>::add(uint32_t index, const T& value)
+{
     // case 1: adding to an empty list (adding to the front of the list)
     // case 2: adding to end of the list (index = mSize)
     // case 3: adding after the end of the list (index > mSize)
     // case 4: adding in the middle of the list somewhere (index < mSize)
     // case 5: adding to the front of the list in a non-empty Linked List (index = 0)
     // case 6: adding to an empty list with an index greater than mSize (i.e index = 10)
-    if (index == mSize) { //case 2
+    if (index == mSize) { // case 2
         add(value);
         return;
-    }
-    else if (index < mSize) { //case 1, case 4
+    } else if (index < mSize) { // case 1, case 4
         LinkedListNode<T>* currNode(mTail->mNext);
         for (uint32_t i = 0; i < index; ++i) {
             currNode = currNode->mNext;
         }
         new LinkedListNode<T>(value, currNode->mPrev, currNode);
         ++mSize;
-    }
-    else { //case 3, case 5, case 6
+    } else { // case 3, case 5, case 6
         uint32_t firstSize = mSize;
         uint32_t diff = index - firstSize;
         for (uint32_t i = 0; i < diff; ++i) {
@@ -123,7 +130,8 @@ template <typename T> void LinkedList<T>::add(uint32_t index, const T& value){
  * This operation is no-throw under the assumption that the parameterizing
  * type's destructor is no-throw.
  */
-template <typename T> void LinkedList<T>::clear() noexcept{
+template <typename T> void LinkedList<T>::clear() noexcept
+{
     while (mSize > 0) {
         LinkedList<T>::removeNode(begin());
     }
@@ -138,7 +146,8 @@ template <typename T> void LinkedList<T>::clear() noexcept{
  * @param index index of the element to return
  * @return constant reference to the element at the index.
  */
-template <typename T> const T& LinkedList<T>::get(uint32_t index) const{
+template <typename T> const T& LinkedList<T>::get(uint32_t index) const
+{
     rangeCheck(index);
     LinkedListNode<T>* currNode(mTail->mNext);
     while (index > 0) {
@@ -157,7 +166,8 @@ template <typename T> const T& LinkedList<T>::get(uint32_t index) const{
  * @param index index of the element to return
  * @return reference to the element at the index.
  */
-template <typename T> T& LinkedList<T>::get(uint32_t index){
+template <typename T> T& LinkedList<T>::get(uint32_t index)
+{
     return const_cast<T&>(const_cast<const LinkedList&>(*this).get(index));
 }
 
@@ -169,7 +179,8 @@ template <typename T> T& LinkedList<T>::get(uint32_t index){
  * @param rhs the LinkedList being compared to
  * @return true iff logically equivalent
  */
-template <typename T> bool LinkedList<T>::operator==(const LinkedList<T>& rhs) const{
+template <typename T> bool LinkedList<T>::operator==(const LinkedList<T>& rhs) const
+{
     if (mSize != rhs.mSize) {
         return false;
     }
@@ -191,7 +202,8 @@ template <typename T> bool LinkedList<T>::operator==(const LinkedList<T>& rhs) c
  * @param rhs the LinkedList being compared to
  * @return true iff not logically equivalent
  */
-template <typename T> bool LinkedList<T>::operator!=(const LinkedList<T>& rhs) const{
+template <typename T> bool LinkedList<T>::operator!=(const LinkedList<T>& rhs) const
+{
     return !(*this == rhs);
 }
 
@@ -201,7 +213,8 @@ template <typename T> bool LinkedList<T>::operator!=(const LinkedList<T>& rhs) c
  *
  * @return const_iterator
  */
-template <typename T> LinkedListConstIterator<T> LinkedList<T>::begin() const noexcept{
+template <typename T> LinkedListConstIterator<T> LinkedList<T>::begin() const noexcept
+{
     return LinkedListConstIterator<T>(mTail->mNext);
 }
 
@@ -211,7 +224,8 @@ template <typename T> LinkedListConstIterator<T> LinkedList<T>::begin() const no
  *
  * @return iterator
  */
-template <typename T> LinkedListIterator<T> LinkedList<T>::begin() noexcept{
+template <typename T> LinkedListIterator<T> LinkedList<T>::begin() noexcept
+{
     return LinkedListIterator<T>(mTail->mNext);
 }
 
@@ -221,7 +235,8 @@ template <typename T> LinkedListIterator<T> LinkedList<T>::begin() noexcept{
  *
  * @return const_iterator
  */
-template <typename T> LinkedListConstIterator<T> LinkedList<T>::end() const noexcept{
+template <typename T> LinkedListConstIterator<T> LinkedList<T>::end() const noexcept
+{
     return LinkedListConstIterator<T>(mTail.get());
 }
 
@@ -231,7 +246,8 @@ template <typename T> LinkedListConstIterator<T> LinkedList<T>::end() const noex
  *
  * @return iterator
  */
-template <typename T> LinkedListIterator<T> LinkedList<T>::end() noexcept{
+template <typename T> LinkedListIterator<T> LinkedList<T>::end() noexcept
+{
     return LinkedListIterator<T>(mTail.get());
 }
 
@@ -241,7 +257,8 @@ template <typename T> LinkedListIterator<T> LinkedList<T>::end() noexcept{
  *
  * @return bool True when empty
  */
-template <typename T> bool LinkedList<T>::isEmpty() const noexcept{
+template <typename T> bool LinkedList<T>::isEmpty() const noexcept
+{
     return mSize == 0;
 }
 
@@ -254,7 +271,8 @@ template <typename T> bool LinkedList<T>::isEmpty() const noexcept{
  *
  * @param index index of the object to remove.
  */
-template <typename T> void LinkedList<T>::remove(uint32_t index){
+template <typename T> void LinkedList<T>::remove(uint32_t index)
+{
     rangeCheck(index);
     LinkedListIterator<T> iter = begin();
     for (uint32_t i = 0; i < index; ++i) {
@@ -272,7 +290,8 @@ template <typename T> void LinkedList<T>::remove(uint32_t index){
  * @param index index of the object to set
  * @param value the new value
  */
-template <typename T> void LinkedList<T>::set(uint32_t index, const T& value){
+template <typename T> void LinkedList<T>::set(uint32_t index, const T& value)
+{
     rangeCheck(index);
     LinkedListNode<T>* list(mTail->mNext);
     for (uint32_t i = 0; i < index; ++i) {
@@ -287,7 +306,8 @@ template <typename T> void LinkedList<T>::set(uint32_t index, const T& value){
  *
  * @return
  */
-template <typename T> uint32_t LinkedList<T>::size() const noexcept{
+template <typename T> uint32_t LinkedList<T>::size() const noexcept
+{
     return mSize;
 }
 
@@ -298,7 +318,8 @@ template <typename T> uint32_t LinkedList<T>::size() const noexcept{
  *
  * @param index index to check
  */
-template <typename T> void LinkedList<T>::rangeCheck(uint32_t index) const{
+template <typename T> void LinkedList<T>::rangeCheck(uint32_t index) const
+{
     if (index >= mSize) {
         throw std::out_of_range(std::to_string(index));
     }
@@ -312,7 +333,8 @@ template <typename T> void LinkedList<T>::rangeCheck(uint32_t index) const{
  * @pre the iterator iter must point to an element (or end) within this list
  * @param iter iterator pointing to the node that should be removed.
  */
-template <typename T> void LinkedList<T>::removeNode(LinkedList::iterator iter) noexcept{
+template <typename T> void LinkedList<T>::removeNode(LinkedList::iterator iter) noexcept
+{
     if (iter != end()) {
         delete iter.mPtr;
         --mSize;
@@ -325,7 +347,8 @@ template <typename T> void LinkedList<T>::removeNode(LinkedList::iterator iter) 
  *
  * @param other the LinkedList to swap with
  */
-template <typename T> void LinkedList<T>::swap(LinkedList<T>& rhs) noexcept{
+template <typename T> void LinkedList<T>::swap(LinkedList<T>& rhs) noexcept
+{
     mTail.swap(rhs.mTail);
     std::swap(rhs.mSize, mSize);
 }

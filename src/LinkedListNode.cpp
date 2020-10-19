@@ -18,13 +18,16 @@ template <typename T>
 LinkedListNode<T>::LinkedListNode(const T& item)
     : mItem(item)
     , mPrev(this)
-    , mNext(this){}
+    , mNext(this)
+{
+}
 
 /**
  * Destructor. Unlinks this node from its neighbors.
  * This operation is a no-throw.
  */
-template <typename T> LinkedListNode<T>::~LinkedListNode() noexcept{
+template <typename T> LinkedListNode<T>::~LinkedListNode() noexcept
+{
     link(mPrev, mNext);
 }
 
@@ -43,11 +46,11 @@ template <typename T>
 LinkedListNode<T>::LinkedListNode(const T& item, LinkedListNode<T>* prev, LinkedListNode<T>* next)
     : mItem(item)
     , mPrev(prev)
-    , mNext(next){
+    , mNext(next)
+{
     link(prev, this);
     link(this, next);
 }
-
 
 /**
  * Establishes the proper linkage between the provided nodes.  First and
